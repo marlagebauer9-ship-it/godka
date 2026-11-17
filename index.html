@@ -517,9 +517,11 @@ function viewMehr(){
       [['auto','Automatisch'],['iphone','iPhone-Stimme'],['datei','Audiodateien']].map(function(m){ return '<button role="tab" data-voice="'+m[0]+'" aria-selected="'+((st.voiceMode||'auto')===m[0])+'">'+m[1]+'</button>'; }).join('')+
     '</div>'+
     '<button class="btn outline" data-speak="Dzień dobry, jestem Marla.">Stimme testen</button>'+
+    '<p class="tip" style="margin:4px 0 0 0;font-weight:600">Test mit normalem Player:</p><audio controls preload="metadata" playsinline src="audio/3d2fc386dd.mp3" style="width:100%"></audio>'+
     '<p id="diag" role="status" style="margin:0;font-size:12px;line-height:17px;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px">'+esc(diagText())+'</p></div>'+
     '<div class="card stack gap10"><b>Auf den Home-Bildschirm</b><p class="tip muted" style="margin:0">In Safari unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“. Dann öffnet sich Gŏdka wie eine App.</p></div>'+
     '<button class="btn ghost" id="reset" style="height:44px">Fortschritt zurücksetzen</button>'+
+    '<p class="muted" style="text-align:center;font-size:12px;margin:0">Version 3</p>'+
   '</div>';
 }
 

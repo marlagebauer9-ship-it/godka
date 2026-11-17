@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gŏdka">
+<meta name="theme-color" content="#F2F2F7">
+<title>Gŏdka – Schlesisch lernen</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{
+  --red:#DC143C; --red-text:#C8102E; --red-dark:#9E0C24; --red-soft:#FDECEF;
+  --bg:#F2F2F7; --card:#FFFFFF; --ink:#1C1C1E; --ink2:#3A3A3C; --muted:#636366; --line:#E5E5EA;
+  --green:#248A3D; --green-text:#1C5E2C; --green-soft:#EAF7EE; --amber:#8A4B00; --amber-soft:#FFF3E0;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.app{max-width:520px;margin:0 auto;min-height:100vh;padding:calc(env(safe-area-inset-top) + 20px) 20px calc(env(safe-area-inset-bottom) + 100px) 20px}
+h1{margin:0;font-size:34px;line-height:41px;font-weight:700;letter-spacing:-0.02em}
+.eyebrow{margin:0;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red-text)}
+.over{margin:0;font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--card);border-radius:22px;padding:20px}
+.stack{display:flex;flex-direction:column}
+.gap6{gap:6px}.gap10{gap:10px}.gap14{gap:14px}.gap18{gap:18px}
+.row{display:flex;align-items:center}
+.between{justify-content:space-between}
+.muted{color:var(--muted)}
+.pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
+.pill.sl{background:var(--amber-soft);color:var(--amber)}
+.big{font-size:30px;line-height:36px;font-weight:700;letter-spacing:-0.02em;margin:0}
+.de{font-size:21px;font-weight:600;margin:0}
+.say{font-size:16px;color:var(--muted);margin:0}
+.say b{color:var(--ink);font-weight:600}
+.btn{height:54px;border-radius:16px;border:none;background:var(--red);color:#fff;font-size:17px;font-weight:600;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.ghost{background:transparent;color:var(--red-text)}
+.btn.outline{background:#fff;color:var(--red-text);border:1.5px solid var(--red)}
+.btn.green{background:var(--green)}
+.icon-btn{width:52px;height:52px;border-radius:26px;border:none;background:var(--red-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.parts{display:flex;gap:8px;flex-wrap:wrap}
+.part{flex:1 1 120px;background:var(--bg);border-radius:14px;padding:10px 12px}
+.part b{display:block;font-size:16px}
+.part span{font-size:13px;color:var(--muted)}
+.tip{margin:0;font-size:14px;line-height:20px;color:var(--ink2)}
+.list{background:#fff;border-radius:16px;overflow:hidden}
+.li{display:flex;align-items:center;gap:12px;padding:12px 16px;border:none;border-bottom:1px solid var(--bg);background:#fff;width:100%;text-align:left}
+.li:last-child{border-bottom:none}
+.li .t{font-size:17px;font-weight:600}
+.li .s{font-size:14px;color:var(--muted)}
+.chev{flex-shrink:0}
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:rgba(249,249,249,.94);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.1);padding:8px 0 calc(env(safe-area-inset-bottom) + 6px);display:grid;grid-template-columns:repeat(4,1fr);z-index:5}
+.tab{border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--muted);min-height:44px}
+.tab[aria-current="page"]{color:var(--red-text)}
+.ring{flex-shrink:0}
+.seg{background:#E3E3E8;border-radius:10px;padding:2px;display:grid;gap:0}
+.seg button{height:34px;border:none;border-radius:8px;background:transparent;font-size:14px;font-weight:500;color:var(--ink2)}
+.seg button[aria-selected="true"]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:600;color:var(--ink)}
+.search{height:44px;border-radius:12px;background:#E3E3E8;display:flex;align-items:center;gap:8px;padding:0 12px}
+.search input{flex:1;border:none;background:transparent;font-size:17px;outline:none;min-width:0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{height:32px;padding:0 14px;border-radius:16px;border:none;background:#fff;font-size:14px;font-weight:600;color:var(--ink2)}
+.chip[aria-pressed="true"]{background:var(--ink);color:#fff}
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:10;overflow-y:auto}
+.sheet-inner{max-width:520px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 12px) 20px calc(env(safe-area-inset-bottom) + 40px) 20px;min-height:100%;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;gap:8px;min-height:44px}
+.close{width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;margin-left:-12px}
+.back{border:none;background:none;color:var(--red-text);font-size:17px;display:flex;align-items:center;gap:2px;min-height:44px;margin-left:-8px;padding:0}
+.bar{flex:1;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar>div{height:8px;background:var(--red);border-radius:4px;transition:width .3s}
+.opt{min-height:56px;border-radius:16px;border:1.5px solid var(--line);background:#fff;font-size:17px;font-weight:600;text-align:left;padding:12px 18px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.opt.right{border:2px solid var(--green);background:var(--green-soft);color:var(--green-text)}
+.opt.wrong{border:2px solid var(--red-text);background:var(--red-soft);color:var(--red-dark)}
+.opt.dim{color:#8E8E93;font-weight:500}
+.table{background:#fff;border-radius:20px;overflow:hidden}
+.tr{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--bg)}
+.tr.head{background:#FAFAFC;padding:9px 16px;border-bottom:1px solid var(--line)}
+.tr.head span{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.unit{display:flex;align-items:center;gap:14px;padding:16px;background:#fff;border-radius:20px;border:none;width:100%;text-align:left}
+.unit-num{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:6px}
+.prog>div{height:6px;background:var(--red)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:600;color:var(--muted)}
+.field input{height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;padding:0 14px;font-size:17px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 96px);transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;z-index:20;max-width:90vw;text-align:center}
+.flag{width:30px;height:30px;border-radius:15px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.flag i{flex:1;display:block}
+.rec{display:flex;gap:8px;flex-wrap:wrap}
+.rec button{height:40px;padding:0 14px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px}
+.rec button.on{background:var(--red);border-color:var(--red);color:#fff}
+.rec button.fam{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function(){
+"use strict";
+
+/* ---------- Inhalte ---------- */
+var UNITS = [
+  {id:'notfall', title:'Notfall-Sätze', sub:'Wenn du nicht mitkommst'},
+  {id:'tisch', title:'Am Familientisch', sub:'Hunger, satt, lecker'},
+  {id:'kueche', title:'Schlesische Küche', sub:'Klöße, Rouladen, Piroggen'},
+  {id:'binhab', title:'Ich bin, du hast', sub:'sein und haben im Alltag'},
+  {id:'kennen', title:'Kennenlernen', sub:'Wie geht’s? Wer bist du?'}
+];
+
+var S = [
+  // Notfall
+  {id:'n1',u:'notfall',pl:'Nie rozumiem.',de:'Ich verstehe nicht.',say:'nje ro-SU-mjem',parts:[['Nie','nicht'],['rozumiem','ich verstehe']],tip:'Schnell gesprochen klingt es oft wie „nje-SU-mjem“ – das „ro“ wird fast verschluckt.'},
+  {id:'n2',u:'notfall',pl:'Proszę wolniej.',de:'Bitte langsamer.',say:'PRO-sche WOL-njej',parts:[['Proszę','bitte'],['wolniej','langsamer']]},
+  {id:'n3',u:'notfall',pl:'Możesz powtórzyć?',de:'Kannst du das wiederholen?',say:'MO-schesch pof-TU-schitsch',parts:[['Możesz','kannst du'],['powtórzyć','wiederholen']],tip:'Zu Älteren höflicher: „Może Pani powtórzyć?“ (zu einer Frau).'},
+  {id:'n4',u:'notfall',pl:'Jak się mówi …?',de:'Wie sagt man …?',say:'jak sche MU-wi',parts:[['Jak','wie'],['się mówi','sagt man']]},
+  {id:'n5',u:'notfall',pl:'Nie wiem.',de:'Ich weiß nicht.',say:'nje wjem',parts:[['Nie','nicht'],['wiem','ich weiß']]},
+  // Tisch
+  {id:'t1',u:'tisch',pl:'Jestem głodna.',de:'Ich habe Hunger.',say:'JES-tem GWOD-na',parts:[['Jestem','ich bin'],['głodna','hungrig (als Frau)']],tip:'Wörtlich „Ich bin hungrig“. Ein Mann sagt „głodny“.'},
+  {id:'t2',u:'tisch',pl:'Chce mi się pić.',de:'Ich habe Durst.',say:'CHTSE mi sche pitsch',parts:[['Chce mi się','mir ist nach'],['pić','trinken']],tip:'„ch“ wie in „Bach“.'},
+  {id:'t3',u:'tisch',pl:'Bardzo smaczne!',de:'Sehr lecker!',say:'BAR-dso SMATSCH-ne',parts:[['Bardzo','sehr'],['smaczne','lecker']],tip:'Dieser Satz macht jede Schwiegermama glücklich.'},
+  {id:'t4',u:'tisch',pl:'Poproszę jeszcze.',de:'Ich hätte gern noch etwas.',say:'po-PRO-sche JESCH-tsche',parts:[['Poproszę','ich bitte um'],['jeszcze','noch']]},
+  {id:'t5',u:'tisch',pl:'Jestem najedzona.',de:'Ich bin satt.',say:'JES-tem na-je-DSO-na',parts:[['Jestem','ich bin'],['najedzona','satt (als Frau)']],tip:'Gleiches Muster wie „Jestem głodna“.'},
+  {id:'t6',u:'tisch',pl:'Dziękuję, wystarczy.',de:'Danke, das reicht.',say:'dschjen-KU-je, wis-TAR-tschi',parts:[['Dziękuję','danke'],['wystarczy','es reicht']],tip:'Perfekt beim dritten Nachschlag.'},
+  {id:'t7',u:'tisch',pl:'Smacznego!',de:'Guten Appetit!',say:'smatsch-NE-go',parts:[['Smacznego','guten Appetit']]},
+  // Küche
+  {id:'k1',u:'kueche',pl:'kluski śląskie',de:'Schlesische Klöße',say:'KLUS-ki SCHLONS-kje',parts:[['kluski','Klöße'],['śląskie','schlesische']]},
+  {id:'k2',u:'kueche',pl:'rolady',de:'Rouladen',say:'ro-LA-di',parts:[['rolada','eine Roulade']]},
+  {id:'k3',u:'kueche',pl:'modro kapusta',de:'Rotkohl',say:'MOD-ro ka-PUS-ta',sl:true,parts:[['modro','blau (schles.)'],['kapusta','Kohl']],tip:'Hochpolnisch: czerwona kapusta. Schlesisch heißt der Rotkohl „blau“, wie bei „Blaukraut“.'},
+  {id:'k4',u:'kueche',pl:'pierogi',de:'Piroggen',say:'pje-RO-gi',parts:[['pierogi','Piroggen']]},
+  {id:'k5',u:'kueche',pl:'rosół',de:'Hühnerbrühe',say:'RO-suw',parts:[['rosół','Brühe']],tip:'Die klassische Sonntagssuppe.'},
+  {id:'k6',u:'kueche',pl:'kołocz',de:'Hefekuchen (schlesisch)',say:'KO-wotsch',sl:true,parts:[['kołocz','Blechkuchen']],tip:'Gibt es oft zu Hochzeiten!'},
+  {id:'k7',u:'kueche',pl:'Uwielbiam pierogi!',de:'Ich liebe Piroggen!',say:'u-WJEL-bjam pje-RO-gi',parts:[['Uwielbiam','ich liebe'],['pierogi','Piroggen']]},
+  {id:'k8',u:'kueche',pl:'Mogę prosić o sos?',de:'Kann ich bitte die Soße haben?',say:'MO-ge PRO-schitsch o sos',parts:[['Mogę','kann ich'],['prosić o','bitten um'],['sos','Soße']]},
+  // bin/hab
+  {id:'b1',u:'binhab',pl:'Jestem zmęczona.',de:'Ich bin müde.',say:'JES-tem smen-TSCHO-na',parts:[['Jestem','ich bin'],['zmęczona','müde (als Frau)']]},
+  {id:'b2',u:'binhab',pl:'Jesteś kochany.',de:'Du bist lieb. (zu einem Mann)',say:'JES-tesch ko-CHA-ni',parts:[['Jesteś','du bist'],['kochany','lieb']],tip:'Zu einer Frau: „Jesteś kochana.“'},
+  {id:'b3',u:'binhab',pl:'Mam pytanie.',de:'Ich habe eine Frage.',say:'mam pi-TA-nje',parts:[['Mam','ich habe'],['pytanie','Frage']]},
+  {id:'b4',u:'binhab',pl:'Masz czas?',de:'Hast du Zeit?',say:'masch tschas',parts:[['Masz','du hast'],['czas','Zeit']]},
+  {id:'b5',u:'binhab',pl:'Jest zimno.',de:'Es ist kalt.',say:'jest SCHIM-no',parts:[['Jest','es ist'],['zimno','kalt']]},
+  // kennen
+  {id:'c1',u:'kennen',pl:'Jak się masz?',de:'Wie geht’s dir?',say:'jak sche masch',parts:[['Jak','wie'],['się masz','geht’s dir']]},
+  {id:'c2',u:'kennen',pl:'Dobrze, a ty?',de:'Gut, und dir?',say:'DOB-sche, a ti',parts:[['Dobrze','gut'],['a ty','und du']]},
+  {id:'c3',u:'kennen',pl:'Miło mi.',de:'Freut mich.',say:'MI-wo mi',parts:[['Miło','angenehm'],['mi','mir']]},
+  {id:'c4',u:'kennen',pl:'Mam na imię Marla.',de:'Ich heiße Marla.',say:'mam na I-mje MAR-la',parts:[['Mam na imię','ich habe zum Namen']]},
+  {id:'c5',u:'kennen',pl:'Mieszkam w Niemczech.',de:'Ich wohne in Deutschland.',say:'MJESCH-kam w NJEM-tschech',parts:[['Mieszkam','ich wohne'],['w Niemczech','in Deutschland']]},
+  {id:'c6',u:'kennen',pl:'Jestem projektantką graficzną.',de:'Ich bin Grafikdesignerin.',say:'JES-tem pro-jek-TANT-kom gra-FITSCH-nom',parts:[['Jestem','ich bin'],['projektantką graficzną','Grafikdesignerin']]}
+];
+
+var WORDS = [
+  {pl:'Dzień dobry',de:'Guten Tag / Guten Morgen',say:'dschjen DOB-ri',k:'Satz'},
+  {pl:'Dziękuję',de:'Danke',say:'dschjen-KU-je',k:'Satz'},
+  {pl:'Dobranoc',de:'Gute Nacht',say:'dob-RA-nots',k:'Satz'},
+  {pl:'Dziękuję bardzo',de:'Vielen Dank',say:'dschjen-KU-je BAR-dso',k:'Satz'},
+  {pl:'Dziynkuja',de:'Danke (schlesisch)',say:'dschin-KU-ja',k:'Schlesisch'},
+  {pl:'Szczęść Boże',de:'traditioneller Gruß (schlesisch, v. a. Ältere)',say:'schtschenschtsch BO-sche',k:'Schlesisch'},
+  {pl:'laczki',de:'Hausschuhe',say:'LATSCH-ki',k:'Nomen'},
+  {pl:'szolka',de:'Tasse (schlesisch)',say:'SCHOL-ka',k:'Schlesisch'},
+  {pl:'fajrant',de:'Feierabend (schlesisch)',say:'FEI-rant',k:'Schlesisch'},
+  {pl:'jo',de:'ja (schlesisch)',say:'jo',k:'Schlesisch'},
+  {pl:'obiad',de:'Mittagessen',say:'O-bjat',k:'Nomen'},
+  {pl:'kolacja',de:'Abendessen',say:'ko-LA-tsja',k:'Nomen'},
+  {pl:'jedzenie',de:'das Essen',say:'je-DSE-nje',k:'Nomen'},
+  {pl:'woda',de:'Wasser',say:'WO-da',k:'Nomen'},
+  {pl:'kawa',de:'Kaffee',say:'KA-wa',k:'Nomen'},
+  {pl:'herbata',de:'Tee',say:'cher-BA-ta',k:'Nomen'},
+  {pl:'chleb',de:'Brot',say:'chlep',k:'Nomen'},
+  {pl:'babcia',de:'Oma',say:'BAB-tscha',k:'Nomen'},
+  {pl:'dziadek',de:'Opa',say:'DSCHA-dek',k:'Nomen'},
+  {pl:'ślub',de:'Hochzeit (Trauung)',say:'schlup',k:'Nomen'},
+  {pl:'wesele',de:'Hochzeitsfeier',say:'we-SE-le',k:'Nomen'},
+  {pl:'żona',de:'Ehefrau',say:'SCHO-na',k:'Nomen'},
+  {pl:'mąż',de:'Ehemann',say:'monsch',k:'Nomen'}
+];
+
+var FUT = [['będę','BEN-de'],['będziesz','BEN-dschesch'],['będzie','BEN-dsche'],['będziemy','ben-DSCHE-mi'],['będziecie','ben-DSCHE-tsche'],['będą','BEN-dong']];
+var PERS = [['ich','ja'],['du','ty'],['er / sie / es','on / ona / ono'],['wir','my'],['ihr','wy'],['sie','oni / one']];
+var VERBS = [
+  {pl:'być',de:'sein',say:'bitsch',noInfFut:true,
+   pr:[['jestem','JES-tem'],['jesteś','JES-tesch'],['jest','jest'],['jesteśmy','jes-TESCH-mi'],['jesteście','jes-TESCH-tsche'],['są','song']],
+   pa:[['byłam','BI-wam'],['byłaś','BI-wasch'],['był / była / było','biw / BI-wa / BI-wo'],['byliśmy / byłyśmy','BI-lisch-mi'],['byliście / byłyście','BI-lisch-tsche'],['byli / były','BI-li / BI-wi']],
+   ex:['Jestem w domu.','Ich bin zu Hause.']},
+  {pl:'mieć',de:'haben',say:'mjetsch',
+   pr:[['mam','mam'],['masz','masch'],['ma','ma'],['mamy','MA-mi'],['macie','MA-tsche'],['mają','MA-jong']],
+   pa:[['miałam','MJA-wam'],['miałaś','MJA-wasch'],['miał / miała / miało','mjaw / MJA-wa / MJA-wo'],['mieliśmy','MJE-lisch-mi'],['mieliście','MJE-lisch-tsche'],['mieli / miały','MJE-li / MJA-wi']],
+   ex:['Masz czas?','Hast du Zeit?']},
+  {pl:'jeść',de:'essen',say:'jeschtsch',
+   pr:[['jem','jem'],['jesz','jesch'],['je','je'],['jemy','JE-mi'],['jecie','JE-tsche'],['jedzą','JE-dsong']],
+   pa:[['jadłam','JAD-wam'],['jadłaś','JAD-wasch'],['jadł / jadła / jadło','jadw / JAD-wa / JAD-wo'],['jedliśmy','JED-lisch-mi'],['jedliście','JED-lisch-tsche'],['jedli / jadły','JED-li / JAD-wi']],
+   ex:['Już jadłam, dziękuję.','Ich habe schon gegessen, danke.']},
+  {pl:'pić',de:'trinken',say:'pitsch',
+   pr:[['piję','PI-je'],['pijesz','PI-jesch'],['pije','PI-je'],['pijemy','pi-JE-mi'],['pijecie','pi-JE-tsche'],['piją','PI-jong']],
+   pa:[['piłam','PI-wam'],['piłaś','PI-wasch'],['pił / piła / piło','piw / PI-wa / PI-wo'],['piliśmy','PI-lisch-mi'],['piliście','PI-lisch-tsche'],['pili / piły','PI-li / PI-wi']],
+   ex:['Piję kawę.','Ich trinke Kaffee.']},
+  {pl:'chcieć',de:'wollen',say:'chtschetsch',
+   pr:[['chcę','chtse'],['chcesz','chtsesch'],['chce','chtse'],['chcemy','CHTSE-mi'],['chcecie','CHTSE-tsche'],['chcą','chtsong']],
+   pa:[['chciałam','CHTSCHA-wam'],['chciałaś','CHTSCHA-wasch'],['chciał / chciała','chtschaw / CHTSCHA-wa'],['chcieliśmy','CHTSCHE-lisch-mi'],['chcieliście','CHTSCHE-lisch-tsche'],['chcieli / chciały','CHTSCHE-li / CHTSCHA-wi']],
+   ex:['Chcesz jeszcze?','Möchtest du noch etwas?']},
+  {pl:'rozumieć',de:'verstehen',say:'ro-SU-mjetsch',
+   pr:[['rozumiem','ro-SU-mjem'],['rozumiesz','ro-SU-mjesch'],['rozumie','ro-SU-mje'],['rozumiemy','ro-su-MJE-mi'],['rozumiecie','ro-su-MJE-tsche'],['rozumieją','ro-su-MJE-jong']],
+   pa:[['rozumiałam','ro-su-MJA-wam'],['rozumiałaś','ro-su-MJA-wasch'],['rozumiał / rozumiała','ro-SU-mjaw / ro-su-MJA-wa'],['rozumieliśmy','ro-su-MJE-lisch-mi'],['rozumieliście','ro-su-MJE-lisch-tsche'],['rozumieli / rozumiały','ro-su-MJE-li / ro-su-MJA-wi']],
+   ex:['Nie rozumiem.','Ich verstehe nicht.']},
+  {pl:'lubić',de:'mögen',say:'LU-bitsch',
+   pr:[['lubię','LU-bje'],['lubisz','LU-bisch'],['lubi','LU-bi'],['lubimy','lu-BI-mi'],['lubicie','lu-BI-tsche'],['lubią','LU-bjong']],
+   pa:[['lubiłam','lu-BI-wam'],['lubiłaś','lu-BI-wasch'],['lubił / lubiła','LU-biw / lu-BI-wa'],['lubiliśmy','lu-BI-lisch-mi'],['lubiliście','lu-BI-lisch-tsche'],['lubili / lubiły','lu-BI-li / lu-BI-wi']],
+   ex:['Lubię rosół.','Ich mag Hühnerbrühe.']}
+];
+
+/* ---------- Speicher ---------- */
+var KEY = 'godka-v1';
+var st = {learned:{}, known:{}, wedding:'', streak:0, lastDay:''};
+try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); for (var k in p) st[k] = p[k]; } } catch(e) {}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e) {} }
+if (!st.seed1) { st.known.n1 = true; st.seed1 = true; save(); }
+
+function today(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function touchStreak(){
+  var t = today(); if (st.lastDay === t) return;
+  var y = new Date(); y.setDate(y.getDate()-1);
+  var ys = y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
+  st.streak = (st.lastDay === ys) ? (st.streak||0)+1 : 1; st.lastDay = t; save();
+}
+function isDone(id){ return !!(st.learned[id] || st.known[id]); }
+function current(){ for (var i=0;i<S.length;i++){ if (!isDone(S[i].id)) return S[i]; } return null; }
+function doneCount(){ var n=0; S.forEach(function(s){ if (isDone(s.id)) n++; }); return n; }
+function daysLeft(){
+  if (!st.wedding) return null;
+  var w = new Date(st.wedding+'T00:00:00'); var n = new Date(); n.setHours(0,0,0,0);
+  return Math.round((w - n)/86400000);
+}
+
+/* ---------- Aussprache ---------- */
+var plVoice = null;
+function pickVoice(){
+  try {
+    var vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    plVoice = vs.filter(function(v){ return /^pl/i.test(v.lang); })[0] || null;
+  } catch(e) {}
+}
+try { if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; } } catch(e) {}
+var AUDIO = {"Dzień dobry, jestem Marla.":"3d2fc386dd","Nie rozumiem.":"0eb40a7ceb","Proszę wolniej.":"86bfef849e","Możesz powtórzyć?":"d10e582c7d","Jak się mówi ?":"d845f20426","Nie wiem.":"0c2fe16d27","Jestem głodna.":"36cb569e56","Chce mi się pić.":"e7ed65eceb","Bardzo smaczne!":"9505e96009","Poproszę jeszcze.":"89f3dd3c20","Jestem najedzona.":"f846d27bf0","Dziękuję, wystarczy.":"e6b1525a0d","Smacznego!":"8e1487f6ce","kluski śląskie":"eff348cae2","rolady":"57efae1cb7","modro kapusta":"d9600fa3a2","pierogi":"54ff112370","rosół":"f7b9aea1c7","kołocz":"d1b00ba6c7","Uwielbiam pierogi!":"966291768d","Mogę prosić o sos?":"cf3337c5ca","Jestem zmęczona.":"f062ea43ae","Jesteś kochany.":"31e6951530","Mam pytanie.":"2cd46c5b53","Masz czas?":"b7416ddfc3","Jest zimno.":"a9147f56a0","Jak się masz?":"fc50ced1a1","Dobrze, a ty?":"97a1987c4e","Miło mi.":"70f53bb6d7","Mam na imię Marla.":"413264f7cf","Mieszkam w Niemczech.":"15949528b0","Jestem projektantką graficzną.":"4e0e08b829","Dzień dobry":"6d8bb9bb9a","Dziękuję":"3578966d8b","Dobranoc":"6b76e12da4","Dziękuję bardzo":"ed4812fc09","Dziynkuja":"8404c7563d","Szczęść Boże":"b8d12d6413","laczki":"20fbc8f161","szolka":"3df315ea0c","fajrant":"cbd55a63bf","jo":"674f33841e","obiad":"282f9d4e4e","kolacja":"a19d10db9b","jedzenie":"65c16500e6","woda":"c22807a349","kawa":"a7e1d23834","herbata":"125e58ef2b","chleb":"e49f7abea0","babcia":"34138187ed","dziadek":"28ce644892","ślub":"47a71bd2db","wesele":"8d72eaf907","żona":"6e1d798f9d","mąż":"944a97d2c4","być":"9921c2c2d5","jestem":"7a6cf6ff70","jesteś":"f43e1b5571","jest":"ee2c1e9e37","jesteśmy":"ebf2ee95f8","jesteście":"9dd6b59214","są":"9fa3c064e3","byłam":"0b7a492819","byłaś":"1cc28b5d58","był":"d5a854a3ce","byliśmy":"55a1b975ac","byliście":"8a4b25559a","byli":"a14f980861","będę":"3ef3b9323b","będziesz":"07ba8bdb72","będzie":"b4ef00b6bc","będziemy":"798448004a","będziecie":"47c2e96a2e","będą":"533bca72ec","mieć":"fa2334347b","mam":"b735b0c78e","masz":"a643249416","ma":"b74df323e3","mamy":"2122f790d2","macie":"433463d9b3","mają":"3ac9f449c2","miałam":"1e65b942ec","miałaś":"02e0c4aa54","miał":"5cbd16eea0","mieliśmy":"6a49067db6","mieliście":"c7b38b21ab","mieli":"08a463b0da","będę mieć":"4113f87ff5","będziesz mieć":"6011c6fee5","będzie mieć":"6492c454fb","będziemy mieć":"c57a10ba41","będziecie mieć":"8f8b42db29","będą mieć":"e9904469b9","jeść":"6500034ffd","jem":"b6ff1e02a4","jesz":"c987fdf72b","je":"79563e9063","jemy":"b0fac1041d","jecie":"feb2abcc93","jedzą":"486910eb57","jadłam":"8b31b79d58","jadłaś":"fd0a778862","jadł":"5e113f327f","jedliśmy":"f618a9a622","jedliście":"c97012a192","jedli":"cc6fb8429e","będę jeść":"d7f941f8e1","będziesz jeść":"7aa73ab97a","będzie jeść":"c7d6d726b8","będziemy jeść":"487b8da8e4","będziecie jeść":"6472404bbe","będą jeść":"caa3505ac1","pić":"a26b7367dd","piję":"5fe12877b2","pijesz":"1ef683cd8e","pije":"7523508a88","pijemy":"d1c7887ef0","pijecie":"6e3f1d3151","piją":"8d14f7ce44","piłam":"edef34cb5b","piłaś":"c8fd30d02a","pił":"1920aede98","piliśmy":"eca97f4f47","piliście":"e3f2c88164","pili":"76ef63369f","będę pić":"850db1ad23","będziesz pić":"23150dead8","będzie pić":"f18a582995","będziemy pić":"f6e40f3806","będziecie pić":"e7decfa0ff","będą pić":"c49dc02242","chcieć":"6b2cc52696","chcę":"e8ab66426f","chcesz":"f162c579d1","chce":"25f670f9fd","chcemy":"0e27eda488","chcecie":"e057a9cc92","chcą":"7661c181ea","chciałam":"ed2caf3d3c","chciałaś":"efaa7e4db3","chciał":"8b363ab7e9","chcieliśmy":"e901061930","chcieliście":"8fef31c4fe","chcieli":"b3c91e76fc","będę chcieć":"43b7b73ce2","będziesz chcieć":"185b4f806d","będzie chcieć":"099843c9c3","będziemy chcieć":"cea185f693","będziecie chcieć":"0607c1df74","będą chcieć":"708f416584","rozumieć":"8434536f46","rozumiem":"6a7e18059a","rozumiesz":"7ad7617aff","rozumie":"1df35bd82e","rozumiemy":"8f303bcd3a","rozumiecie":"3940071863","rozumieją":"8681384b18","rozumiałam":"1a6c39d596","rozumiałaś":"f42879bb2f","rozumiał":"af4a849cf8","rozumieliśmy":"6f34f7b7df","rozumieliście":"ede7e23a27","rozumieli":"88bb951bd4","będę rozumieć":"60539ed6ee","będziesz rozumieć":"353f6de9cd","będzie rozumieć":"871ae0285f","będziemy rozumieć":"2820de39da","będziecie rozumieć":"da56ca581a","będą rozumieć":"e49d470344","lubić":"882c4c72c9","lubię":"26250839bc","lubisz":"c7d764d704","lubi":"0cd811eba4","lubimy":"1e895ee235","lubicie":"6f791a3897","lubią":"09d8f8d997","lubiłam":"2d6fce9009","lubiłaś":"5cf80b112f","lubił":"f0f5df5a9c","lubiliśmy":"24d4c85c2f","lubiliście":"999b5868f4","lubili":"cedd3d386d","będę lubić":"2ce36eee12","będziesz lubić":"4d3141cb40","będzie lubić":"5ed7870713","będziemy lubić":"94fb31a93d","będziecie lubić":"fa95f114cf","będą lubić":"cbff41e057"};
+var player = null;
+var ttsBroken = false;
+function speak(text, slow){
+  var key = text.replace('…','').trim();
+  if (recKeys[key]) { playRec(key, slow); return; }
+  if (plVoice && !ttsBroken) { speakTTS(text, slow, function(){ ttsBroken = true; playFile(key, slow, text); }); return; }
+  playFile(key, slow, text);
+}
+function playFile(key, slow, text){
+  var id = AUDIO[key];
+  if (id){
+    try {
+      if (!player) player = new Audio();
+      player.pause();
+      player.src = 'audio/' + id + '.mp3';
+      try { player.preservesPitch = true; player.webkitPreservesPitch = true; } catch(e) {}
+      player.playbackRate = slow ? 0.7 : 1;
+      var pr = player.play();
+      speakLog = 'Audiodatei wird abgespielt';
+      if (pr && pr.then) pr.then(function(){ speakLog = 'Audiodatei läuft ✓'; refreshDiag(); }).catch(function(err){ speakLog = 'Audio blockiert: ' + (err && err.name ? err.name : 'Fehler'); refreshDiag(); if (!ttsBroken) speakTTS(text, slow); });
+      return;
+    } catch(e) { speakLog = 'Audio-Fehler: ' + e.message; }
+  }
+  if (!ttsBroken) speakTTS(text, slow); else toast('Für diesen Text gibt es noch keine Aufnahme');
+}
+var lastUtter = null, speakLog = 'noch nicht getestet';
+function speakTTS(text, slow, onFail){
+  try {
+    if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+      speakLog = 'Vorlesen wird in dieser Ansicht nicht unterstützt';
+      toast('Vorlesen geht in dieser Ansicht nicht. Öffne die App direkt in Safari.'); return;
+    }
+    var synth = window.speechSynthesis;
+    if (!plVoice) pickVoice();
+    if (synth.speaking || synth.pending) synth.cancel();
+    try { synth.resume(); } catch(e) {}
+    var u = new SpeechSynthesisUtterance(text.replace('…','').trim());
+    u.lang = 'pl-PL'; if (plVoice) u.voice = plVoice;
+    u.rate = slow ? 0.6 : 0.9; u.volume = 1;
+    var started = false;
+    u.onstart = function(){ started = true; speakLog = 'Vorlesen hat gestartet ✓'; refreshDiag(); };
+    u.onerror = function(e){ speakLog = 'Stimme: ' + (e && e.error ? e.error : 'Fehler'); refreshDiag(); if (onFail && e && e.error !== 'interrupted' && e.error !== 'canceled') { onFail(); return; } if (!onFail) toast('Vorlesen fehlgeschlagen'); };
+    lastUtter = u;
+    synth.speak(u);
+    setTimeout(function(){
+      if (!started && !synth.speaking) {
+        speakLog = 'Keine Wiedergabe gestartet';
+        refreshDiag();
+        if (onFail) { onFail(); return; }
+        toast(plVoice ? 'Kein Ton? Lautlos-Schalter und Lautstärke prüfen.' : 'Keine polnische Stimme gefunden – siehe „Mehr“.');
+      }
+    }, 1500);
+  } catch(e) { speakLog = 'Fehler: ' + e.message; refreshDiag(); toast('Vorlesen nicht möglich'); }
+}
+function diagText(){
+  var ok = ('speechSynthesis' in window);
+  var all = 0, pl = 0;
+  try { var vs = ok ? speechSynthesis.getVoices() : []; all = vs.length; pl = vs.filter(function(v){ return /^pl/i.test(v.lang); }).length; } catch(e) {}
+  return 'Vorlesen verfügbar: ' + (ok ? 'ja' : 'nein') + ' · Stimmen gesamt: ' + all + ' · polnische Stimmen: ' + pl + ' · Letzter Test: ' + speakLog;
+}
+function refreshDiag(){ var d = document.getElementById('diag'); if (d) d.textContent = diagText(); }
+
+/* ---------- Familien-Aufnahmen ---------- */
+var recKeys = {}, recUrlCache = {}, recState = null, db = null;
+function idb(cb){
+  if (db) { cb(db); return; }
+  try {
+    var r = indexedDB.open('godka-rec', 1);
+    r.onupgradeneeded = function(){ r.result.createObjectStore('rec'); };
+    r.onsuccess = function(){ db = r.result; cb(db); };
+    r.onerror = function(){ cb(null); };
+  } catch(e) { cb(null); }
+}
+function loadRecKeys(){
+  idb(function(d){ if (!d) return;
+    try { var tx = d.transaction('rec','readonly'); var req = tx.objectStore('rec').getAllKeys();
+      req.onsuccess = function(){ (req.result||[]).forEach(function(k){ recKeys[k] = true; }); render(); }; } catch(e) {}
+  });
+}
+function saveRec(key, blob){
+  idb(function(d){ if (!d) { toast('Speichern nicht möglich'); return; }
+    try { var tx = d.transaction('rec','readwrite'); tx.objectStore('rec').put(blob, key);
+      tx.oncomplete = function(){ recKeys[key] = true; delete recUrlCache[key]; toast('Aufnahme gespeichert ✓'); render(); }; } catch(e) { toast('Speichern nicht möglich'); }
+  });
+}
+function deleteRec(key){
+  idb(function(d){ if (!d) return;
+    try { var tx = d.transaction('rec','readwrite'); tx.objectStore('rec').delete(key);
+      tx.oncomplete = function(){ delete recKeys[key]; delete recUrlCache[key]; render(); }; } catch(e) {}
+  });
+}
+function playRec(key, slow){
+  function go(url){ if (!player) player = new Audio(); player.pause(); player.src = url; player.playbackRate = slow ? 0.75 : 1; var p = player.play(); if (p && p.catch) p.catch(function(){ toast('Abspielen nicht möglich'); }); }
+  if (recUrlCache[key]) { go(recUrlCache[key]); return; }
+  idb(function(d){ if (!d) return;
+    var req = d.transaction('rec','readonly').objectStore('rec').get(key);
+    req.onsuccess = function(){ if (req.result) { recUrlCache[key] = URL.createObjectURL(req.result); go(recUrlCache[key]); } };
+  });
+}
+function startRec(key){
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+    toast('Aufnehmen geht hier nicht – öffne die App über ihre eigene Adresse in Safari'); return;
+  }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    var mime = '';
+    ['audio/mp4','audio/webm;codecs=opus','audio/webm'].some(function(m){ if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)) { mime = m; return true; } return false; });
+    var rec = mime ? new MediaRecorder(stream, {mimeType: mime}) : new MediaRecorder(stream);
+    var chunks = [];
+    rec.ondataavailable = function(e){ if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = function(){
+      stream.getTracks().forEach(function(t){ t.stop(); });
+      var blob = new Blob(chunks, {type: rec.mimeType || mime || 'audio/mp4'});
+      recState = null;
+      if (blob.size > 0) saveRec(key, blob); else { toast('Aufnahme war leer'); render(); }
+    };
+    rec.start();
+    recState = {key:key, rec:rec};
+    render();
+  }).catch(function(){ toast('Kein Zugriff aufs Mikrofon – in den Safari-Einstellungen erlauben'); });
+}
+function stopRec(){ if (recState && recState.rec && recState.rec.state !== 'inactive') recState.rec.stop(); }
+function recBlock(text){
+  var key = text.replace('…','').trim();
+  var isRec = recState && recState.key === key;
+  var mic = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4"/></svg>';
+  if (isRec) return '<div class="rec"><button class="on" data-recstop>■ Stopp – Aufnahme läuft …</button></div>';
+  if (recKeys[key]) return '<div class="rec"><button class="fam" data-recplay="'+esc(key)+'">▶ Familien-Aufnahme</button><button data-rec="'+esc(key)+'">'+mic+'Neu</button><button data-recdel="'+esc(key)+'" aria-label="Aufnahme löschen">Löschen</button></div>';
+  return '<div class="rec"><button data-rec="'+esc(key)+'">'+mic+'Aufnehmen (z. B. dein Freund)</button></div>';
+}
+
+/* ---------- Helfer ---------- */
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function sayHTML(say){ return esc(say).replace(/\b([A-ZÄÖÜ]{2,}[A-ZÄÖÜ]*)\b/g,'<b>$1</b>'); }
+var I = {
+  speaker:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>',
+  check:function(c){ return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="'+c+'" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'; },
+  x:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#636366" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  chev:'<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>',
+  back:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>',
+  play:'<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg>',
+  lock:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#636366" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+};
+function ring(frac, size){
+  var r = 15, c = 2*Math.PI*r, off = c*(1-Math.max(0,Math.min(1,frac)));
+  return '<svg class="ring" width="'+size+'" height="'+size+'" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="'+r+'" fill="none" stroke="#F2D3D9" stroke-width="6"/><circle cx="20" cy="20" r="'+r+'" fill="none" stroke="#DC143C" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 20 20)"/></svg>';
+}
+var toastTimer = null;
+function toast(msg){
+  var old = document.querySelector('.toast'); if (old) old.remove();
+  var t = document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent = msg; document.body.appendChild(t);
+  clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.remove(); }, 3200);
+}
+function shuffle(a){ a = a.slice(); for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+/* ---------- Zustand UI ---------- */
+var ui = {tab:'heute', sheet:null, q:'', filter:'Alle', tense:'pr'};
+var VALID_TABS = ['heute','lernen','woerter','mehr'];
+function fromHash(){ var h = (location.hash||'').replace('#',''); if (VALID_TABS.indexOf(h)>=0) ui.tab = h; }
+fromHash();
+window.addEventListener('hashchange', function(){ fromHash(); render(); });
+
+var root = document.getElementById('root');
+
+/* ---------- Screens ---------- */
+function sentenceCard(s, label){
+  var parts = (s.parts||[]).map(function(p){ return '<div class="part"><b>'+esc(p[0])+'</b><span>'+esc(p[1])+'</span></div>'; }).join('');
+  return '<div class="card stack gap14" style="box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.05)">'+
+    '<div class="row between"><p class="eyebrow">'+esc(label)+'</p>'+(s.sl?'<span class="pill sl">Schlesisch · Familien-Check</span>':'<span class="pill">'+esc(unitTitle(s.u))+'</span>')+'</div>'+
+    '<div class="row between" style="gap:12px"><div class="stack gap6"><p class="big" lang="pl">'+esc(s.pl)+'</p><p class="say">Sprich: '+sayHTML(s.say)+'</p></div>'+
+    '<button class="icon-btn" data-speak="'+esc(s.pl)+'" aria-label="Anhören">'+I.speaker+'</button></div>'+
+    '<p class="de">'+esc(s.de)+'</p>'+
+    (parts?'<div style="height:1px;background:var(--line)"></div><div class="parts" lang="pl">'+parts+'</div>':'')+
+    (s.tip?'<p class="tip">'+esc(s.tip)+'</p>':'')+recBlock(s.pl)+
+  '</div>';
+}
+function unitTitle(id){ for (var i=0;i<UNITS.length;i++) if (UNITS[i].id===id) return UNITS[i].title; return ''; }
+
+function viewHeute(){
+  var d = new Date();
+  var dateStr = d.toLocaleDateString('de-DE',{weekday:'long', day:'numeric', month:'long'});
+  var cur = current(); var dl = daysLeft(); var done = doneCount();
+  var head = '<div class="row between" style="align-items:flex-end"><div class="stack" style="gap:2px"><p class="over">'+esc(dateStr)+'</p><h1>Heute</h1></div>'+
+    '<div class="flag" aria-hidden="true"><i style="background:#fff"></i><i style="background:#DC143C"></i></div></div>';
+  var status = '<button class="card row" data-go="mehr" style="padding:14px 16px;gap:14px;border:none;width:100%;text-align:left">'+ring(done/S.length,40)+
+    '<span class="stack" style="gap:1px;flex:1"><span style="font-size:15px;font-weight:600">'+(dl===null?'Hochzeitsdatum eintragen':(dl>0?'Noch '+dl+' Tage bis zur Hochzeit':(dl===0?'Heute ist Hochzeit! 💍':'Frisch verheiratet')))+'</span>'+
+    '<span style="font-size:13px;color:var(--muted)">'+done+' von '+S.length+' Sätzen · '+(st.streak||0)+' Tage in Folge</span></span>'+I.chev+'</button>';
+  var main;
+  if (cur){
+    main = sentenceCard(cur,'Satz des Tages')+
+      '<button class="btn" data-learn="'+cur.id+'">'+I.check('#fff')+'Als gelernt abhaken</button>'+
+      '<button class="btn ghost" data-known="'+cur.id+'" style="height:44px;margin-top:-6px">Kann ich schon</button>';
+  } else {
+    main = '<div class="card stack gap10" style="text-align:center;padding:28px"><p class="big">Alles geschafft!</p><p class="muted" style="margin:0">Alle '+S.length+' Sätze sind abgehakt. Neue Einheiten folgen.</p></div>';
+  }
+  var nextUnit = cur ? cur.u : null;
+  var more = '<div class="stack gap6"><p class="over" style="margin-left:4px">Außerdem</p><div class="list">'+
+    (nextUnit?'<button class="li" data-lesson="'+nextUnit+'"><span class="unit-num" style="width:32px;height:32px;border-radius:9px;background:var(--red)">'+I.play+'</span><span class="stack" style="flex:1"><span class="t" style="font-size:16px">Lektion · 5 Min</span><span class="s">'+esc(unitTitle(nextUnit))+'</span></span>'+I.chev+'</button>':'')+
+    '<button class="li" data-go="woerter"><span class="unit-num" style="width:32px;height:32px;border-radius:9px;background:var(--bg);color:var(--red-text);font-size:14px">Aa</span><span class="stack" style="flex:1"><span class="t" style="font-size:16px">Wörterbuch &amp; Verben</span><span class="s">ich, du, er/sie/es …</span></span>'+I.chev+'</button>'+
+    '</div></div>';
+  return '<div class="stack gap14">'+head+status+main+more+'</div>';
+}
+
+function viewLernen(){
+  var units = UNITS.map(function(u, i){
+    var list = S.filter(function(s){ return s.u===u.id; });
+    var d = list.filter(function(s){ return isDone(s.id); }).length;
+    var full = d===list.length;
+    var started = d>0;
+    var bg = full ? 'background:var(--red);color:#fff' : (started ? 'background:var(--red-soft);color:var(--red-text)' : 'background:var(--bg);color:var(--muted)');
+    return '<button class="unit" data-lesson="'+u.id+'"><span class="unit-num" style="'+bg+'">'+(full?I.check('#fff'):(i+1))+'</span>'+
+      '<span class="stack" style="flex:1;min-width:0"><span style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--red-text)">Einheit '+(i+1)+'</span>'+
+      '<span style="font-size:18px;font-weight:700">'+esc(u.title)+'</span><span style="font-size:14px;color:var(--muted)">'+esc(u.sub)+' · '+d+'/'+list.length+'</span>'+
+      '<span class="prog"><span style="display:block;height:6px;width:'+Math.round(d/list.length*100)+'%;background:var(--red)"></span></span></span>'+I.chev+'</button>';
+  }).join('');
+  return '<div class="stack gap14"><div class="stack" style="gap:2px"><p class="over">'+doneCount()+' von '+S.length+' Sätzen</p><h1>Lernpfad</h1></div>'+units+
+    '<p class="tip muted" style="text-align:center;margin-top:6px">Jede Lektion: neue Sätze ansehen, anhören, dann ein kurzes Quiz.</p></div>';
+}
+
+function allEntries(){
+  var e = [];
+  VERBS.forEach(function(v, i){ e.push({pl:v.pl, de:v.de, say:v.say, k:'Verb', verb:i}); });
+  S.forEach(function(s){ e.push({pl:s.pl, de:s.de, say:s.say, k: s.sl?'Schlesisch':(/[.!?…]$/.test(s.pl)?'Satz':'Nomen'), sid:s.id}); });
+  WORDS.forEach(function(w){ e.push(w); });
+  return e;
+}
+function viewWoerter(){
+  var chips = ['Alle','Verben','Sätze','Schlesisch'].map(function(c){ return '<button class="chip" data-filter="'+c+'" aria-pressed="'+(ui.filter===c)+'">'+c+'</button>'; }).join('');
+  return '<div class="stack gap14"><h1>Wörterbuch</h1>'+
+    '<label class="search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#636366" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr">Suchen</span>'+
+    '<input id="q" type="search" placeholder="Deutsch oder Polnisch suchen" value="'+esc(ui.q)+'" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></label>'+
+    '<div class="chips" role="group" aria-label="Filter">'+chips+'</div>'+
+    '<div id="wres" class="stack gap10">'+woerterResults()+'</div></div>';
+}
+function woerterResults(){
+  var q = ui.q.toLowerCase().trim();
+  var res = allEntries().filter(function(x){
+    var hit = !q || x.pl.toLowerCase().indexOf(q)>=0 || x.de.toLowerCase().indexOf(q)>=0;
+    var f = ui.filter;
+    var ok = f==='Alle' || (f==='Verben'&&x.k==='Verb') || (f==='Sätze'&&x.k==='Satz') || (f==='Schlesisch'&&x.k==='Schlesisch');
+    return hit && ok;
+  });
+  var rows = res.map(function(x, i){
+    var attr = x.verb!==undefined ? 'data-verb="'+x.verb+'"' : 'data-word="'+esc(x.pl)+'"';
+    var pc = x.k==='Verb' ? 'background:var(--red-soft);color:var(--red-text)' : (x.k==='Schlesisch'?'background:var(--amber-soft);color:var(--amber)':'');
+    return '<button class="li" '+attr+'><span class="stack" style="flex:1;min-width:0"><span class="t" lang="pl">'+esc(x.pl)+'</span><span class="s">'+esc(x.de)+'</span></span><span class="pill" style="'+pc+'">'+esc(x.k)+'</span>'+I.chev+'</button>';
+  }).join('');
+  return '<p class="over" style="margin:4px 0 0 4px">'+res.length+' Treffer</p>'+
+    (res.length?'<div class="list">'+rows+'</div>':'<div class="card stack gap6"><b>Noch nicht im Wörterbuch</b><span class="muted" style="font-size:14px">Frag deinen Freund danach, ich ergänze es dann.</span></div>');
+}
+
+function viewMehr(){
+  var knownList = Object.keys(st.known).filter(function(k){ return st.known[k]; }).map(function(id){
+    var s = S.filter(function(x){ return x.id===id; })[0]; return s ? '<div class="li"><span class="stack" style="flex:1"><span class="t" lang="pl">'+esc(s.pl)+'</span><span class="s">'+esc(s.de)+'</span></span><button class="chip" data-unknow="'+id+'">Zurück in den Lernplan</button></div>' : '';
+  }).join('');
+  return '<div class="stack gap18"><h1>Mehr</h1>'+
+    '<div class="card stack gap14"><div class="field"><label for="wd">Hochzeitsdatum</label><input id="wd" type="date" value="'+esc(st.wedding)+'"></div>'+
+    '<p class="tip muted" style="margin:0">Für den Countdown auf der Startseite.</p></div>'+
+    '<div class="stack gap6"><p class="over" style="margin-left:4px">Kann ich schon</p><div class="list">'+
+      '<div class="li"><span class="stack" style="flex:1"><span class="t" lang="pl">Dzień dobry · Dziękuję (bardzo) · Dobranoc</span><span class="s">Guten Tag · (Vielen) Dank · Gute Nacht</span></span></div>'+
+      '<div class="li"><span class="stack" style="flex:1"><span class="t" lang="pl">laczki</span><span class="s">Hausschuhe</span></span></div>'+
+      knownList+'</div></div>'+
+    '<div class="card stack gap10"><b>Aussprache anhören</b><p class="tip muted" style="margin:0">Reihenfolge: 1. Familien-Aufnahme (falls vorhanden), 2. polnische iPhone-Stimme, 3. eingebaute Computerstimme. Bessere iPhone-Stimme laden: Einstellungen › Bedienungshilfen › Gesprochene Inhalte › Stimmen › Polnisch › „Zosia (Erweitert)“.</p><p class="tip" style="margin:0">Familien-Aufnahmen gespeichert: <b>'+Object.keys(recKeys).length+'</b></p>'+
+    '<button class="btn outline" data-speak="Dzień dobry, jestem Marla.">Stimme testen</button>'+
+    '<p id="diag" role="status" style="margin:0;font-size:12px;line-height:17px;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px">'+esc(diagText())+'</p></div>'+
+    '<div class="card stack gap10"><b>Auf den Home-Bildschirm</b><p class="tip muted" style="margin:0">In Safari unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“. Dann öffnet sich Gŏdka wie eine App.</p></div>'+
+    '<button class="btn ghost" id="reset" style="height:44px">Fortschritt zurücksetzen</button>'+
+  '</div>';
+}
+
+/* ---------- Sheets ---------- */
+function sheetWrap(inner){ return '<div class="sheet" role="dialog" aria-modal="true"><div class="sheet-inner">'+inner+'</div></div>'; }
+
+function viewWord(pl){
+  var x = allEntries().filter(function(e){ return e.pl===pl; })[0]; if (!x) return '';
+  var s = x.sid ? S.filter(function(t){ return t.id===x.sid; })[0] : null;
+  var body = s ? sentenceCard(s, x.k) :
+    '<div class="card stack gap14"><div class="row between"><p class="eyebrow">'+esc(x.k)+'</p></div>'+
+    '<div class="row between" style="gap:12px"><div class="stack gap6"><p class="big" lang="pl">'+esc(x.pl)+'</p><p class="say">Sprich: '+sayHTML(x.say)+'</p></div><button class="icon-btn" data-speak="'+esc(x.pl)+'" aria-label="Anhören">'+I.speaker+'</button></div>'+
+    '<p class="de">'+esc(x.de)+'</p>'+(x.k==='Schlesisch'?'<span class="pill sl" style="align-self:flex-start">Familien-Check: Aussprache bestätigen lassen</span>':'')+recBlock(x.pl)+'</div>';
+  return sheetWrap('<div class="topbar"><button class="back" data-close>'+I.back+'Zurück</button></div><div class="stack gap14" style="margin-top:8px">'+body+
+    '<button class="btn outline" data-speak-slow="'+esc(x.pl)+'">Langsam anhören</button></div>');
+}
+
+function viewVerb(i){
+  var v = VERBS[i]; var t = ui.tense;
+  var forms = t==='pr' ? v.pr : (t==='pa' ? v.pa : FUT.map(function(f){ return v.noInfFut ? f : [f[0]+' '+v.pl, f[1]+' '+v.say]; }));
+  var note = t==='pr' ? 'Das Wort für „ich“, „du“ usw. lässt man meist weg: „'+v.pr[0][0]+'“ reicht schon. Höflich (Sie) zu einer Frau: „Pani '+v.pr[2][0]+'“, zu einem Mann: „Pan '+v.pr[2][0]+'“.' :
+    (t==='pa' ? 'Vergangenheit hängt vom Geschlecht ab. Hier stehen bei „ich“ und „du“ die weiblichen Formen (deine). Ein Mann sagt z. B. „'+v.pa[0][0].replace(/am$/,'em').replace(/łam$/,'łem')+'“.' :
+    (v.noInfFut ? 'Bei „być“ ist die Zukunft einfach: będę = ich werde sein.' : 'Zukunft = będę (ich werde) + Grundform, ganz wie im Deutschen.'));
+  var rows = forms.map(function(f, k){
+    return '<button class="tr" data-speak="'+esc(f[0].split(' / ')[0])+'" style="width:100%;border:none;background:#fff;text-align:left">'+
+      '<span class="stack"><span style="font-size:15px;font-weight:600;color:var(--ink2)">'+esc(PERS[k][0])+'</span><span style="font-size:12px;color:var(--muted)" lang="pl">'+esc(PERS[k][1])+'</span></span>'+
+      '<span style="font-size:18px;font-weight:700" lang="pl">'+esc(f[0])+'</span><span style="font-size:13px;color:var(--muted);text-align:right">'+sayHTML(f[1])+'</span></button>';
+  }).join('');
+  var seg = [['pr','Gegenwart'],['pa','Vergangenheit'],['fu','Zukunft']].map(function(s){ return '<button role="tab" data-tense="'+s[0]+'" aria-selected="'+(t===s[0])+'">'+s[1]+'</button>'; }).join('');
+  return sheetWrap('<div class="topbar"><button class="back" data-close>'+I.back+'Zurück</button><span style="flex:1"></span><button class="icon-btn" style="width:44px;height:44px" data-speak="'+esc(v.pl)+'" aria-label="Anhören">'+I.speaker+'</button></div>'+
+    '<div class="stack gap14" style="margin-top:4px"><div class="stack" style="gap:2px"><p class="muted" style="margin:0;font-size:13px;font-weight:600">Verb</p>'+
+    '<div class="row" style="gap:12px;align-items:baseline;flex-wrap:wrap"><h1 lang="pl">'+esc(v.pl)+'</h1><span class="say">Sprich: '+sayHTML(v.say)+'</span></div><p class="de" style="color:var(--ink2)">'+esc(v.de)+'</p></div>'+
+    '<div class="seg" role="tablist" aria-label="Zeitform" style="grid-template-columns:repeat(3,1fr)">'+seg+'</div>'+
+    '<div class="table"><div class="tr head"><span>Person</span><span>Polnisch</span><span style="color:var(--red-text)">Sprich</span></div>'+rows+
+    '<div style="padding:10px 16px;background:#FAFAFC;font-size:13px;line-height:18px;color:var(--ink2)">'+esc(note)+' Tippe eine Zeile an, um sie zu hören.</div></div>'+
+    '<div class="card stack" style="gap:4px;padding:14px 16px"><span class="over" style="font-size:12px">Beispiel</span><span style="font-size:17px;font-weight:600" lang="pl">'+esc(v.ex[0])+'</span><span class="muted" style="font-size:14px">'+esc(v.ex[1])+'</span></div></div>');
+}
+
+/* Lektion */
+var L = null;
+function startLesson(unitId){
+  var all = S.filter(function(s){ return s.u===unitId; });
+  var fresh = all.filter(function(s){ return !isDone(s.id); }).slice(0,3);
+  var review = fresh.length===0;
+  var set = review ? shuffle(all).slice(0,4) : fresh;
+  var steps = [];
+  if (!review) set.forEach(function(s){ steps.push({type:'card', s:s}); });
+  set.forEach(function(s){ steps.push({type:'quiz', s:s, opts: shuffle([s].concat(shuffle(S.filter(function(o){ return o.id!==s.id; })).slice(0,3)))}); });
+  steps.push({type:'done'});
+  L = {unit:unitId, steps:steps, i:0, picked:null, set:set, review:review, right:0};
+  ui.sheet = {kind:'lesson'}; render();
+}
+function viewLesson(){
+  var step = L.steps[L.i]; var total = L.steps.length;
+  var top = '<div class="topbar"><button class="close" data-close aria-label="Lektion schließen">'+I.x+'</button><div class="bar"><div style="width:'+Math.round((L.i+1)/total*100)+'%"></div></div><span style="font-size:15px;font-weight:600;color:var(--muted);min-width:42px;text-align:right">'+Math.min(L.i+1,total)+'/'+total+'</span></div>';
+  var body = '', cta = '';
+  if (step.type==='card'){
+    body = '<p class="muted" style="margin:18px 0 12px;font-size:15px">'+esc(unitTitle(L.unit))+'</p>'+sentenceCard(step.s,'Neuer Satz');
+    cta = '<button class="btn" data-next>Weiter</button>';
+  } else if (step.type==='quiz'){
+    var opts = step.opts.map(function(o){
+      var cls = 'opt', icon = '';
+      if (L.picked){
+        if (o.id===step.s.id){ cls+=' right'; icon=I.check('#248A3D'); }
+        else if (o.id===L.picked){ cls+=' wrong'; icon='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>'; }
+        else cls+=' dim';
+      }
+      return '<button class="'+cls+'" data-pick="'+o.id+'"'+(L.picked?' disabled':'')+'><span>'+esc(o.de)+'</span>'+icon+'</button>';
+    }).join('');
+    body = '<div class="stack gap6" style="margin-top:24px"><p class="eyebrow">Was bedeutet das?</p></div>'+
+      '<div class="card stack gap10" style="margin-top:14px;align-items:center;text-align:center"><button class="icon-btn" style="width:72px;height:72px;border-radius:36px" data-speak="'+esc(step.s.pl)+'" aria-label="Anhören">'+I.speaker+'</button>'+
+      '<p class="big" lang="pl" style="font-size:26px">'+esc(step.s.pl)+'</p><p class="say">Sprich: '+sayHTML(step.s.say)+'</p></div>'+
+      '<div class="stack gap10" style="margin-top:18px">'+opts+'</div>';
+    cta = L.picked ? '<button class="btn'+(L.picked===step.s.id?' green':'')+'" data-next>'+(L.picked===step.s.id?'Richtig! Weiter':'Weiter')+'</button>' : '<p class="muted" style="text-align:center;margin:0;height:54px;line-height:54px">Tippe auf die richtige Bedeutung</p>';
+  } else {
+    var n = L.set.length;
+    body = '<div class="stack gap14" style="align-items:center;text-align:center;margin-top:48px"><span style="width:96px;height:96px;border-radius:48px;background:var(--red);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 12px var(--red-soft)"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>'+
+      '<h1 style="margin-top:16px;font-size:30px">'+(L.review?'Wiederholung geschafft!':'Lektion geschafft!')+'</h1><p class="muted" style="margin:0">'+L.right+' von '+n+' richtig'+(L.review?'':' · '+n+' neue Sätze')+'</p></div>';
+    cta = '<button class="btn" data-finish>Fertig</button>';
+  }
+  return sheetWrap(top+'<div class="stack" style="flex:1">'+body+'</div><div style="margin-top:24px">'+cta+'</div>');
+}
+
+/* ---------- Rendern ---------- */
+function render(){
+  var content = ui.tab==='heute'?viewHeute():ui.tab==='lernen'?viewLernen():ui.tab==='woerter'?viewWoerter():viewMehr();
+  var tabs = [['heute','Heute','<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
+    ['lernen','Lernpfad','<circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/>'],
+    ['woerter','Wörterbuch','<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'],
+    ['mehr','Mehr','<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>']].map(function(t){
+      return '<button class="tab" data-go="'+t[0]+'"'+(ui.tab===t[0]?' aria-current="page"':'')+'><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+t[2]+'</svg>'+t[1]+'</button>';
+    }).join('');
+  var sheet = '';
+  if (ui.sheet){
+    if (ui.sheet.kind==='word') sheet = viewWord(ui.sheet.pl);
+    else if (ui.sheet.kind==='verb') sheet = viewVerb(ui.sheet.i);
+    else if (ui.sheet.kind==='lesson' && L) sheet = viewLesson();
+  }
+  root.innerHTML = '<main class="app">'+content+'</main><nav class="tabbar" aria-label="Hauptnavigation">'+tabs+'</nav>'+sheet;
+  document.body.style.overflow = ui.sheet ? 'hidden' : '';
+}
+
+function go(tab){
+  ui.tab = tab; ui.sheet = null;
+  try { if (location.hash !== '#'+tab) history.replaceState(null,'','#'+tab); } catch(e) {}
+  render(); window.scrollTo(0,0);
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click', function(ev){
+  var el = ev.target.closest('button, [data-go]'); if (!el) return;
+  var d = el.dataset;
+  if (d.go){ go(d.go); return; }
+  if (d.rec){ startRec(d.rec); return; }
+  if (el.hasAttribute('data-recstop')){ stopRec(); return; }
+  if (d.recplay){ playRec(d.recplay, false); return; }
+  if (d.recdel){ deleteRec(d.recdel); return; }
+  if (d.speak){ speak(d.speak, false); return; }
+  if (d.speakSlow){ speak(d.speakSlow, true); return; }
+  if (d.learn){ st.learned[d.learn] = true; touchStreak(); save(); toast('Abgehakt ✓ Weiter geht’s mit dem nächsten Satz'); render(); return; }
+  if (d.known){ st.known[d.known] = true; save(); toast('Als „Kann ich schon“ markiert'); render(); return; }
+  if (d.unknow){ delete st.known[d.unknow]; delete st.learned[d.unknow]; save(); render(); return; }
+  if (d.lesson){ startLesson(d.lesson); return; }
+  if (d.filter){ ui.filter = d.filter; render(); return; }
+  if (d.verb !== undefined){ ui.tense = 'pr'; ui.sheet = {kind:'verb', i:+d.verb}; render(); return; }
+  if (d.word){ ui.sheet = {kind:'word', pl:d.word}; render(); return; }
+  if (d.tense){ ui.tense = d.tense; render(); return; }
+  if (el.hasAttribute('data-close')){ ui.sheet = null; L = null; render(); return; }
+  if (d.pick && L){ L.picked = d.pick; var st2 = L.steps[L.i]; if (d.pick===st2.s.id) L.right++; render(); speak(st2.s.pl,false); return; }
+  if (el.hasAttribute('data-next') && L){ L.i++; L.picked = null; render(); return; }
+  if (el.hasAttribute('data-finish') && L){ if (!L.review) L.set.forEach(function(s){ st.learned[s.id] = true; }); touchStreak(); save(); L = null; ui.sheet = null; render(); return; }
+  if (el.id==='reset'){ ui.sheet = {kind:'confirm'}; renderConfirm(); return; }
+});
+function renderConfirm(){
+  render();
+  var box = document.createElement('div');
+  box.innerHTML = sheetWrap('<div class="stack gap14" style="margin:auto 0"><div class="card stack gap14"><b style="font-size:19px">Fortschritt wirklich zurücksetzen?</b><p class="tip muted" style="margin:0">Alle Haken und „Kann ich schon“-Markierungen werden gelöscht.</p><button class="btn" id="doReset">Ja, zurücksetzen</button><button class="btn ghost" id="noReset">Abbrechen</button></div></div>');
+  document.body.appendChild(box);
+  box.querySelector('#doReset').onclick = function(){ st.learned = {}; st.known = {}; st.streak = 0; st.lastDay=''; save(); box.remove(); ui.sheet=null; render(); toast('Zurückgesetzt'); };
+  box.querySelector('#noReset').onclick = function(){ box.remove(); ui.sheet=null; render(); };
+}
+document.addEventListener('input', function(ev){
+  if (ev.target.id==='q'){
+    ui.q = ev.target.value;
+    var box = document.getElementById('wres'); if (box) box.innerHTML = woerterResults();
+  }
+});
+document.addEventListener('change', function(ev){
+  if (ev.target.id==='wd'){ st.wedding = ev.target.value; save(); toast('Hochzeitsdatum gespeichert'); }
+});
+
+render();
+loadRecKeys();
+try {
+  if ('serviceWorker' in navigator && location.protocol === 'https:' && !/claude\.ai|claudeusercontent/.test(location.hostname)) {
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  }
+} catch(e) {}
+})();
+</script>
+</body>
+</html>

@@ -247,7 +247,16 @@ var ttsBroken = false;
 function speak(text, slow){
   var key = text.replace('…','').trim();
   if (recKeys[key]) { playRec(key, slow); return; }
-  if (plVoice && !ttsBroken) { speakTTS(text, slow, function(){ ttsBroken = true; playFile(key, slow, text); }); return; }
+  var mode = st.voiceMode || 'auto';
+  if (!plVoice) pickVoice();
+  var useTTS = mode === 'iphone' || (mode === 'auto' && plVoice && !st.ttsBroken);
+  if (useTTS) {
+    speakTTS(text, slow, function(){
+      if (mode === 'auto') { st.ttsBroken = true; save(); }
+      toast('iPhone-Stimme klappt hier nicht – tippe nochmal, dann kommt die eingebaute Audiodatei');
+    });
+    return;
+  }
   playFile(key, slow, text);
 }
 function playFile(key, slow, text){
@@ -261,11 +270,11 @@ function playFile(key, slow, text){
       player.playbackRate = slow ? 0.7 : 1;
       var pr = player.play();
       speakLog = 'Audiodatei wird abgespielt';
-      if (pr && pr.then) pr.then(function(){ speakLog = 'Audiodatei läuft ✓'; refreshDiag(); }).catch(function(err){ speakLog = 'Audio blockiert: ' + (err && err.name ? err.name : 'Fehler'); refreshDiag(); if (!ttsBroken) speakTTS(text, slow); });
+      if (pr && pr.then) pr.then(function(){ speakLog = 'Audiodatei läuft ✓'; refreshDiag(); }).catch(function(err){ speakLog = 'Audio blockiert: ' + (err && err.name ? err.name : 'Fehler'); refreshDiag(); toast('Abspielen blockiert – Lautlos-Schalter prüfen und nochmal tippen'); });
       return;
     } catch(e) { speakLog = 'Audio-Fehler: ' + e.message; }
   }
-  if (!ttsBroken) speakTTS(text, slow); else toast('Für diesen Text gibt es noch keine Aufnahme');
+  toast('Für diesen Text gibt es noch keine Audiodatei');
 }
 var lastUtter = null, speakLog = 'noch nicht getestet';
 function speakTTS(text, slow, onFail){
@@ -293,14 +302,14 @@ function speakTTS(text, slow, onFail){
         if (onFail) { onFail(); return; }
         toast(plVoice ? 'Kein Ton? Lautlos-Schalter und Lautstärke prüfen.' : 'Keine polnische Stimme gefunden – siehe „Mehr“.');
       }
-    }, 1500);
+    }, 3000);
   } catch(e) { speakLog = 'Fehler: ' + e.message; refreshDiag(); toast('Vorlesen nicht möglich'); }
 }
 function diagText(){
   var ok = ('speechSynthesis' in window);
   var all = 0, pl = 0;
   try { var vs = ok ? speechSynthesis.getVoices() : []; all = vs.length; pl = vs.filter(function(v){ return /^pl/i.test(v.lang); }).length; } catch(e) {}
-  return 'Vorlesen verfügbar: ' + (ok ? 'ja' : 'nein') + ' · Stimmen gesamt: ' + all + ' · polnische Stimmen: ' + pl + ' · Letzter Test: ' + speakLog;
+  return 'Modus: ' + (st.voiceMode||'auto') + (st.ttsBroken?' (iPhone-Stimme übersprungen)':'') + ' · Vorlesen verfügbar: ' + (ok ? 'ja' : 'nein') + ' · Stimmen gesamt: ' + all + ' · polnische Stimmen: ' + pl + ' · Letzter Test: ' + speakLog;
 }
 function refreshDiag(){ var d = document.getElementById('diag'); if (d) d.textContent = diagText(); }
 
@@ -504,6 +513,9 @@ function viewMehr(){
       '<div class="li"><span class="stack" style="flex:1"><span class="t" lang="pl">laczki</span><span class="s">Hausschuhe</span></span></div>'+
       knownList+'</div></div>'+
     '<div class="card stack gap10"><b>Aussprache anhören</b><p class="tip muted" style="margin:0">Reihenfolge: 1. Familien-Aufnahme (falls vorhanden), 2. polnische iPhone-Stimme, 3. eingebaute Computerstimme. Bessere iPhone-Stimme laden: Einstellungen › Bedienungshilfen › Gesprochene Inhalte › Stimmen › Polnisch › „Zosia (Erweitert)“.</p><p class="tip" style="margin:0">Familien-Aufnahmen gespeichert: <b>'+Object.keys(recKeys).length+'</b></p>'+
+    '<div class="seg" role="tablist" aria-label="Stimme" style="grid-template-columns:repeat(3,1fr)">'+
+      [['auto','Automatisch'],['iphone','iPhone-Stimme'],['datei','Audiodateien']].map(function(m){ return '<button role="tab" data-voice="'+m[0]+'" aria-selected="'+((st.voiceMode||'auto')===m[0])+'">'+m[1]+'</button>'; }).join('')+
+    '</div>'+
     '<button class="btn outline" data-speak="Dzień dobry, jestem Marla.">Stimme testen</button>'+
     '<p id="diag" role="status" style="margin:0;font-size:12px;line-height:17px;color:var(--muted);background:var(--bg);border-radius:10px;padding:10px 12px">'+esc(diagText())+'</p></div>'+
     '<div class="card stack gap10"><b>Auf den Home-Bildschirm</b><p class="tip muted" style="margin:0">In Safari unten auf „Teilen“ tippen, dann „Zum Home-Bildschirm“. Dann öffnet sich Gŏdka wie eine App.</p></div>'+
@@ -621,6 +633,7 @@ document.addEventListener('click', function(ev){
   var el = ev.target.closest('button, [data-go]'); if (!el) return;
   var d = el.dataset;
   if (d.go){ go(d.go); return; }
+  if (d.voice){ st.voiceMode = d.voice; st.ttsBroken = false; save(); render(); return; }
   if (d.rec){ startRec(d.rec); return; }
   if (el.hasAttribute('data-recstop')){ stopRec(); return; }
   if (d.recplay){ playRec(d.recplay, false); return; }
